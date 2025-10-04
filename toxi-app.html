@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FFUP Toxi App - Toxicologia Farmacêutica</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f6ff;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, #6a0dad, #8a2be2);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            margin-left: 10px;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+            font-weight: 500;
+        }
+
+        nav ul li a:hover, 
+        nav ul li a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        main {
+            padding: 2rem 0;
+            min-height: calc(100vh - 160px);
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .page-header h2 {
+            font-size: 2rem;
+            color: #6a0dad;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #444;
+        }
+
+        .required::after {
+            content: " *";
+            color: #e74c3c;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #6a0dad;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(106, 13, 173, 0.2);
+        }
+
+        textarea.form-control {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #6a0dad;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn:hover {
+            background: #5a0ba5;
+        }
+
+        .btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-success {
+            background: #27ae60;
+        }
+
+        .btn-success:hover {
+            background: #219653;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+        }
+
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+
+        .btn-info {
+            background: #3498db;
+        }
+
+        .btn-info:hover {
+            background: #2980b9;
+        }
+
+        .search-box {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .search-form .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .search-results {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .results-header {
+            background: #6a0dad;
+            color: white;
+            padding: 1rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .results-count {
+            font-weight: normal;
+            font-size: 0.9rem;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .results-table th,
+        .results-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .results-table th {
+            background: #8a2be2;
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        .results-table tr:hover {
+            background: #f8f6ff;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.25rem 0.5rem;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .edit-btn {
+            background: #3498db;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .gestao-toxicidade-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #6a0dad;
+        }
+
+        .gestao-toxicidade-btn {
+            background: #e74c3c;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+
+        .gestao-toxicidade-btn:hover {
+            background: #c0392b;
+        }
+
+        .gestao-toxicidade-btn.ocular { background: #3498db; }
+        .gestao-toxicidade-btn.ocular:hover { background: #2980b9; }
+
+        .gestao-toxicidade-btn.cutaneo { background: #e67e22; }
+        .gestao-toxicidade-btn.cutaneo:hover { background: #d35400; }
+
+        .gestao-toxicidade-btn.inhalacao { background: #27ae60; }
+        .gestao-toxicidade-btn.inhalacao:hover { background: #219653; }
+
+        .gestao-toxicidade-btn.ingestao { background: #9b59b6; }
+        .gestao-toxicidade-btn.ingestao:hover { background: #8e44ad; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        .gestao-toxicidade-info {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 6px;
+            border-left: 4px solid #e74c3c;
+            margin: 1rem 0;
+        }
+
+        .gestao-toxicidade-info h3 {
+            color: #e74c3c;
+            margin-bottom: 1rem;
+        }
+
+        .emergency-contact {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .ciav-info {
+            background: #e8f4fd;
+            border: 1px solid #b6d7f2;
+            padding: 1.5rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+        }
+
+        .ciav-info h4 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+
+        .ciav-item {
+            margin-bottom: 1rem;
+            padding-left: 1rem;
+            border-left: 3px solid #3498db;
+        }
+
+        .ciav-item strong {
+            color: #2c3e50;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+        }
+
+        .gestao-toxicidade-indicators {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            margin: 0.5rem 0;
+        }
+
+        .gestao-toxicidade-indicator {
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+        }
+
+        .indicator-ocular { background: #3498db; }
+        .indicator-cutaneo { background: #e67e22; }
+        .indicator-inhalacao { background: #27ae60; }
+        .indicator-ingestao { background: #9b59b6; }
+
+        .outra-situacao-text {
+            background: #f8f9fa;
+            padding: 0.75rem;
+            border-radius: 4px;
+            border-left: 4px solid #95a5a6;
+            font-style: italic;
+            margin: 0.5rem 0;
+        }
+
+        .access-control {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .access-control h3 {
+            color: #856404;
+            margin-bottom: 1rem;
+        }
+
+        .password-input {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            margin: 1rem 0;
+        }
+
+        .password-input input {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 200px;
+        }
+
+        footer {
+            background: #6a0dad;
+            color: white;
+            text-align: center;
+            padding: 1.5rem 0;
+            margin-top: 2rem;
+        }
+
+        .search-options {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .optional-field {
+            color: #666;
+            font-style: italic;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .status-message {
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin: 0.5rem 0;
+            text-align: center;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            nav ul {
+                margin-top: 1rem;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            nav ul li {
+                margin: 0.25rem;
+            }
+
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+            
+            .results-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .search-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-options {
+                flex-direction: column;
+            }
+
+            .gestao-toxicidade-buttons {
+                flex-direction: column;
+            }
+
+            .checkbox-group {
+                flex-direction: column;
+            }
+
+            .password-input {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">FFUP</span>
+                    <h1>FFUP Toxi App - Toxicologia Farmacêutica</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#" class="nav-link active" data-page="pesquisa">Pesquisa</a></li>
+                        <li><a href="#" class="nav-link" data-page="gestao">Gestão de Registo</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <!-- Página de Pesquisa -->
+            <section id="pesquisa" class="page active">
+                <div class="page-header">
+                    <h2>Pesquisa de Registos</h2>
+                    <p>Consultar informações sobre substâncias tóxicas na base de dados</p>
+                </div>
+
+                <!-- Botões de Gestão de Toxicidade -->
+                <div class="gestao-toxicidade-buttons">
+                    <h3 style="width: 100%; margin-bottom: 0.5rem; color: #6a0dad;">Gestão de Toxicidade - Primeira Atuação</h3>
+                    <button class="gestao-toxicidade-btn ocular" onclick="showGestaoToxicidadeModal('ocular')">Contato Ocular</button>
+                    <button class="gestao-toxicidade-btn cutaneo" onclick="showGestaoToxicidadeModal('cutaneo')">Contato Cutâneo</button>
+                    <button class="gestao-toxicidade-btn inhalacao" onclick="showGestaoToxicidadeModal('inhalacao')">Inalação</button>
+                    <button class="gestao-toxicidade-btn ingestao" onclick="showGestaoToxicidadeModal('ingestao')">Ingestão</button>
+                </div>
+                
+                <div class="search-box">
+                    <div class="search-options">
+                        <div class="search-option">
+                            <input type="radio" id="search-all" name="search-type" value="all" checked>
+                            <label for="search-all">Pesquisar em todos os campos</label>
+                        </div>
+                        <div class="search-option">
+                            <input type="radio" id="search-specific" name="search-type" value="specific">
+                            <label for="search-specific">Pesquisar em campo específico</label>
+                        </div>
+                    </div>
+                    
+                    <form id="search-records-form" class="search-form">
+                        <div class="form-group" id="specific-field-group" style="display: none;">
+                            <label for="search-field">Pesquisar Por</label>
+                            <select id="search-field" class="form-control">
+                                <option value="NomeComercial">Nome Comercial</option>
+                                <option value="Funcao">Função</option>
+                                <option value="SubstanciaToxica">Substância Tóxica</option>
+                                <option value="EfeitoToxico">Efeito Tóxico</option>
+                                <option value="MecanismoAcao">Mecanismo de Ação</option>
+                                <option value="GestaoToxicidade">Gestão de Toxicidade</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="search-term">Termo de Pesquisa</label>
+                            <input type="text" id="search-term" class="form-control" placeholder="Digite o termo de pesquisa...">
+                        </div>
+                        <button type="submit" class="btn">Pesquisar</button>
+                        <button type="button" id="show-all-btn" class="btn btn-success">Mostrar Todos</button>
+                    </form>
+                </div>
+
+                <div id="search-status"></div>
+
+                <div class="search-results">
+                    <div class="results-header">
+                        <span>Resultados da Pesquisa</span>
+                        <span class="results-count" id="results-count">0 registos encontrados</span>
+                    </div>
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome Comercial</th>
+                                <th>Função</th>
+                                <th>Substância Tóxica</th>
+                                <th>Efeito Tóxico</th>
+                                <th>Mecanismo de Ação</th>
+                                <th>Gestão de Toxicidade</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="search-results-body">
+                            <tr>
+                                <td colspan="8" style="text-align: center; padding: 2rem;">
+                                    <div>Carregando registos...</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Página de Gestão de Registo -->
+            <section id="gestao" class="page">
+                <div class="page-header">
+                    <h2>Gestão de Registo</h2>
+                    <p>Acesso restrito a utilizadores autorizados</p>
+                </div>
+                
+                <div class="form-container">
+                    <!-- Controlo de Acesso -->
+                    <div id="access-control-section" class="access-control">
+                        <h3>🔒 Acesso Restrito</h3>
+                        <p>Esta área é reservada a utilizadores autorizados. Por favor, insira a palavra-passe de administração.</p>
+                        <div class="password-input">
+                            <input type="password" id="admin-password" placeholder="Palavra-passe de administração">
+                            <button type="button" class="btn" onclick="verifyAdminAccess()">Aceder</button>
+                        </div>
+                        <p style="font-size: 0.9rem; color: #666; margin-top: 1rem;">
+                            <em>Contacte o administrador do sistema para obter acesso.</em>
+                        </p>
+                    </div>
+
+                    <!-- Conteúdo da Gestão (inicialmente escondido) -->
+                    <div id="gestao-content" style="display: none;">
+                        <div class="search-box">
+                            <h3 style="margin-bottom: 1rem; color: #6a0dad;">Encontrar Registo por ID</h3>
+                            <form id="find-record-form" class="search-form">
+                                <div class="form-group">
+                                    <label for="find-id">ID do Registo</label>
+                                    <input type="number" id="find-id" class="form-control" placeholder="Digite o ID do registo...">
+                                </div>
+                                <button type="submit" class="btn">Carregar Registo</button>
+                                <button type="button" id="new-record-btn" class="btn btn-success">Novo Registo</button>
+                            </form>
+                        </div>
+
+                        <div id="form-status"></div>
+
+                        <form id="manage-record-form">
+                            <div class="form-group">
+                                <label for="record-id" class="required">ID do Registo</label>
+                                <input type="number" id="record-id" class="form-control" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="nome-comercial" class="required">Nome Comercial</label>
+                                <input type="text" id="nome-comercial" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="funcao" class="required">Função</label>
+                                <input type="text" id="funcao" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="substancia-toxica" class="required">Substância Tóxica</label>
+                                <input type="text" id="substancia-toxica" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="efeito-toxico">Efeito Tóxico <span class="optional-field">(opcional)</span></label>
+                                <textarea id="efeito-toxico" class="form-control" placeholder="Não aplicável"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="mecanismo-acao">Mecanismo de Ação <span class="optional-field">(opcional)</span></label>
+                                <textarea id="mecanismo-acao" class="form-control" placeholder="Não aplicável"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Gestão de Toxicidade - Selecione as situações aplicáveis:</label>
+                                <div class="checkbox-group">
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="gestao-ocular" name="gestao-toxicidade" value="ocular">
+                                        <label for="gestao-ocular">Contato Ocular</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="gestao-cutaneo" name="gestao-toxicidade" value="cutaneo">
+                                        <label for="gestao-cutaneo">Contato Cutâneo</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="gestao-inhalacao" name="gestao-toxicidade" value="inhalacao">
+                                        <label for="gestao-inhalacao">Inalação</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="gestao-ingestao" name="gestao-toxicidade" value="ingestao">
+                                        <label for="gestao-ingestao">Ingestão</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="gestao-outra" name="gestao-toxicidade" value="outra">
+                                        <label for="gestao-outra">Outra Situação</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="outra-situacao-group" style="display: none;">
+                                <label for="outra-situacao-texto" class="required">Descreva a gestão de toxicidade específica:</label>
+                                <textarea id="outra-situacao-texto" class="form-control" placeholder="Descreva as medidas específicas de gestão de toxicidade para esta substância..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="gestao-toxicidade">Notas Adicionais <span class="optional-field">(opcional)</span></label>
+                                <textarea id="gestao-toxicidade" class="form-control" placeholder="Informação adicional sobre gestão de toxicidade..."></textarea>
+                            </div>
+                            
+                            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                                <button type="submit" id="save-btn" class="btn">Criar Registo</button>
+                                <button type="button" id="update-btn" class="btn btn-warning" style="display: none;">Atualizar Registo</button>
+                                <button type="button" id="delete-btn" class="btn btn-danger" style="display: none;">Eliminar Registo</button>
+                                <button type="button" id="cancel-btn" class="btn">Cancelar</button>
+                                <button type="button" id="logout-btn" class="btn" onclick="logoutAdmin()" style="background: #95a5a6;">Sair</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal para Gestão de Toxicidade -->
+    <div id="gestaoToxicidadeModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeGestaoToxicidadeModal()">&times;</span>
+            <div id="gestaoToxicidadeContent">
+                <!-- Conteúdo será preenchido por JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>FFUP Toxi App - Toxicologia Farmacêutica &copy; 2025</p>
+        </div>
+    </footer>
+
+    <script>
+        // URL do seu Google Apps Script
+        const API_URL = 'https://script.google.com/macros/s/AKfycbw_TdNdE__J8UeSJjTUY3f3hFQg071xBcDAa-NqVF7AnYBzn-4lW6DBejREPof9-_Mg9g/exec';
+
+        // Palavra-passe de administração (pode ser alterada)
+        const ADMIN_PASSWORD = "FFUP2025";
+
+        // Estado de autenticação
+        let isAuthenticated = false;
+
+        // Dados da Gestão de Toxicidade
+        const gestaoToxicidadeData = {
+            ocular: {
+                title: 'Gestão de Toxicidade - Contato Ocular',
+                instructions: [
+                    'Remova as lentes de contacto (se tiver)',
+                    'Use bastante água à temperatura ambiente e lave os olhos durante pelo menos 15 a 20 minutos',
+                    'Incentive o piscar',
+                    'Após a irrigação chama 112 ou 800 250 250 (CIAV)'
+                ]
+            },
+            cutaneo: {
+                title: 'Gestão de Toxicidade - Contato Cutâneo',
+                instructions: [
+                    'Remova primeiro a roupa contaminada',
+                    'Cada segundo conta. Não demore',
+                    'Utilize bastante água corrente à temperatura ambiente e enxague durante pelo menos 15 minutos',
+                    'Após a irrigação chama 112 ou 800 250 250 (CIAV)'
+                ]
+            },
+            inhalacao: {
+                title: 'Gestão de Toxicidade - Inalação',
+                instructions: [
+                    'Dirija-se imediatamente para um local com ar fresco',
+                    'Afaste-se de todos os fumos e gases tóxicos',
+                    'Ventile bem a área afetada',
+                    'Após se deslocar para um local com ar fresco, chama 112 ou 800 250 250 (CIAV)'
+                ]
+            },
+            ingestao: {
+                title: 'Gestão de Toxicidade - Ingestão',
+                instructions: [
+                    'Beba imediatamente uma pequena quantidade de água se a pessoa seja capaz de engolir, não haja sinais de engasgo ou dificuldade para respirar',
+                    'Não induzir o vômito',
+                    'Procura ajuda com 112 ou 800 250 250 (CIAV)'
+                ]
+            }
+        };
+
+        // Informação para o CIAV
+        const ciavInformation = [
+            {
+                question: "Quem",
+                answer: "Idade, sexo, gravidez …"
+            },
+            {
+                question: "O quê", 
+                answer: "Nome do medicamento ou produto (se possível tenha a embalagem consigo), animal, planta …"
+            },
+            {
+                question: "Quanto",
+                answer: "Quantidade ingerida (aproximadamente) ou tempo de exposição ao produto"
+            },
+            {
+                question: "Quando", 
+                answer: "Há quanto tempo"
+            },
+            {
+                question: "Onde",
+                answer: "Em casa, na rua, no local de trabalho …"
+            },
+            {
+                question: "Como",
+                answer: "Em jejum, com alimentos, com bebidas alcoólicas …"
+            }
+        ];
+
+        // Função para verificar acesso de administração
+        function verifyAdminAccess() {
+            const passwordInput = document.getElementById('admin-password');
+            const enteredPassword = passwordInput.value.trim();
+            
+            if (enteredPassword === ADMIN_PASSWORD) {
+                isAuthenticated = true;
+                document.getElementById('access-control-section').style.display = 'none';
+                document.getElementById('gestao-content').style.display = 'block';
+                showStatus('Acesso concedido. Bem-vindo!', 'success');
+            } else {
+                showStatus('Palavra-passe incorreta. Tente novamente.', 'error');
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        }
+
+        // Função para terminar sessão de administração
+        function logoutAdmin() {
+            isAuthenticated = false;
+            document.getElementById('access-control-section').style.display = 'block';
+            document.getElementById('gestao-content').style.display = 'none';
+            document.getElementById('admin-password').value = '';
+            resetForm();
+            showStatus('Sessão terminada.', 'success');
+        }
+
+        // Verificar autenticação ao tentar aceder à página de gestão
+        function checkAuthentication() {
+            if (!isAuthenticated) {
+                document.getElementById('access-control-section').style.display = 'block';
+                document.getElementById('gestao-content').style.display = 'none';
+            } else {
+                document.getElementById('access-control-section').style.display = 'none';
+                document.getElementById('gestao-content').style.display = 'block';
+            }
+        }
+
+        // Função para mostrar modal de gestão de toxicidade
+        function showGestaoToxicidadeModal(type) {
+            const modal = document.getElementById('gestaoToxicidadeModal');
+            const content = document.getElementById('gestaoToxicidadeContent');
+            const data = gestaoToxicidadeData[type];
+
+            let html = `
+                <h2 style="color: #6a0dad; margin-bottom: 1rem;">${data.title}</h2>
+                <div class="gestao-toxicidade-info">
+                    <h3>Instruções de Primeira Atuação:</h3>
+                    <ol style="margin-left: 1.5rem; margin-bottom: 1rem;">
+            `;
+            
+            data.instructions.forEach(instruction => {
+                html += `<li style="margin-bottom: 0.5rem;">${instruction}</li>`;
+            });
+
+            html += `
+                    </ol>
+                </div>
+                <div class="emergency-contact">
+                    📞 EMERGÊNCIA: 112 ou 800 250 250 (CIAV)
+                </div>
+                <div class="ciav-info">
+                    <h4>📋 Dados que deverá oferecer ao CIAV:</h4>
+            `;
+            
+            ciavInformation.forEach(item => {
+                html += `
+                    <div class="ciav-item">
+                        <strong>${item.question}</strong>
+                        ${item.answer}
+                    </div>
+                `;
+            });
+
+            html += `
+                </div>
+                <p style="font-style: italic; margin-top: 1rem; color: #666;">
+                    Nota: Estas são instruções gerais de primeira atuação. 
+                    Sempre procure assistência médica profissional.
+                </p>
+            `;
+
+            content.innerHTML = html;
+            modal.style.display = 'block';
+        }
+
+        // Função para fechar modal
+        function closeGestaoToxicidadeModal() {
+            document.getElementById('gestaoToxicidadeModal').style.display = 'none';
+        }
+
+        // Fechar modal ao clicar fora
+        window.onclick = function(event) {
+            const modal = document.getElementById('gestaoToxicidadeModal');
+            if (event.target === modal) {
+                closeGestaoToxicidadeModal();
+            }
+        }
+
+        // Mostrar/ocultar campo de texto para "Outra Situação"
+        document.addEventListener('DOMContentLoaded', function() {
+            const gestaoOutraCheckbox = document.getElementById('gestao-outra');
+            const outraSituacaoGroup = document.getElementById('outra-situacao-group');
+
+            if (gestaoOutraCheckbox) {
+                gestaoOutraCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        outraSituacaoGroup.style.display = 'block';
+                        // Desmarcar outras opções quando "Outra Situação" é selecionada
+                        document.querySelectorAll('input[name="gestao-toxicidade"]:not(#gestao-outra)').forEach(checkbox => {
+                            checkbox.checked = false;
+                        });
+                    } else {
+                        outraSituacaoGroup.style.display = 'none';
+                        document.getElementById('outra-situacao-texto').value = '';
+                    }
+                });
+
+                // Quando outras opções são selecionadas, desmarcar "Outra Situação"
+                document.querySelectorAll('input[name="gestao-toxicidade"]:not(#gestao-outra)').forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        if (this.checked) {
+                            gestaoOutraCheckbox.checked = false;
+                            outraSituacaoGroup.style.display = 'none';
+                            document.getElementById('outra-situacao-texto').value = '';
+                        }
+                    });
+                });
+            }
+
+            // Verificar autenticação ao carregar a página
+            checkAuthentication();
+        });
+
+        // Resto do código JavaScript permanece igual...
+        // [O restante do código JavaScript anterior é mantido aqui]
+        // Função para chamar a API, mostrar status, navigation, etc.
+
+        // Função para chamar a API
+        async function callAPI(action, params = {}) {
+            try {
+                const formData = new FormData();
+                formData.append('action', action);
+                
+                Object.keys(params).forEach(key => {
+                    formData.append(key, params[key]);
+                });
+
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                return result;
+            } catch (error) {
+                console.error('Erro na API:', error);
+                return {
+                    status: 'error',
+                    message: 'Erro de conexão: ' + error.message
+                };
+            }
+        }
+
+        // Função para mostrar mensagem de status
+        function showStatus(message, type = 'success', elementId = null) {
+            const statusElement = elementId ? document.getElementById(elementId) : document.getElementById('form-status');
+            if (statusElement) {
+                statusElement.innerHTML = `<div class="status-message status-${type}">${message}</div>`;
+                setTimeout(() => {
+                    statusElement.innerHTML = '';
+                }, 5000);
+            }
+        }
+
+        // Navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const pages = document.querySelectorAll('.page');
+            
+            // Configurar opções de pesquisa
+            document.getElementById('search-all').addEventListener('change', function() {
+                document.getElementById('specific-field-group').style.display = 'none';
+            });
+            
+            document.getElementById('search-specific').addEventListener('change', function() {
+                document.getElementById('specific-field-group').style.display = 'block';
+            });
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    pages.forEach(p => p.classList.remove('active'));
+                    
+                    this.classList.add('active');
+                    
+                    const pageId = this.getAttribute('data-page');
+                    document.getElementById(pageId).classList.add('active');
+                    
+                    if (pageId === 'pesquisa') {
+                        loadAllRecords();
+                    }
+                    
+                    // Verificar autenticação se for para a página de gestão
+                    if (pageId === 'gestao') {
+                        checkAuthentication();
+                    }
+                });
+            });
+            
+            // Formulário de pesquisa
+            document.getElementById('search-records-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const searchTerm = document.getElementById('search-term').value;
+                const searchAll = document.getElementById('search-all').checked;
+                
+                if (searchTerm.trim() === '') {
+                    loadAllRecords();
+                    return;
+                }
+                
+                const searchField = searchAll ? 'all' : document.getElementById('search-field').value;
+                
+                const result = await callAPI('search', {
+                    term: searchTerm,
+                    field: searchField
+                });
+                
+                if (result.status === 'success') {
+                    displaySearchResults(result.data);
+                } else {
+                    showStatus(result.message, 'error', 'search-status');
+                    displaySearchResults([]);
+                }
+            });
+            
+            // Botão para mostrar todos os registos
+            document.getElementById('show-all-btn').addEventListener('click', function() {
+                document.getElementById('search-term').value = '';
+                loadAllRecords();
+            });
+            
+            // Formulário para encontrar registo por ID
+            document.getElementById('find-record-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const id = document.getElementById('find-id').value;
+                
+                if (!id) {
+                    showStatus('Por favor, insira um ID', 'error');
+                    return;
+                }
+                
+                const result = await callAPI('getAll');
+                if (result.status === 'success') {
+                    const registo = result.data.find(r => r.ID == id);
+                    if (registo) {
+                        loadRecordForEditing(registo);
+                        showStatus('Registo carregado com sucesso', 'success');
+                    } else {
+                        showStatus('Registo não encontrado!', 'error');
+                    }
+                } else {
+                    showStatus(result.message, 'error');
+                }
+            });
+            
+            // Botão para novo registo
+            document.getElementById('new-record-btn').addEventListener('click', function() {
+                resetForm();
+                document.getElementById('save-btn').style.display = 'inline-block';
+                document.getElementById('update-btn').style.display = 'none';
+                document.getElementById('delete-btn').style.display = 'none';
+            });
+            
+            // Botão para salvar novo registo
+            document.getElementById('manage-record-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                if (!isAuthenticated) {
+                    showStatus('Acesso não autorizado. Por favor, faça login como administrador.', 'error');
+                    return;
+                }
+                
+                const recordId = document.getElementById('record-id').value;
+                const isEditing = document.getElementById('update-btn').style.display !== 'none';
+                
+                if (isEditing) {
+                    await updateRecord(recordId);
+                } else {
+                    await createNewRecord();
+                }
+            });
+            
+            // Botão para atualizar registo
+            document.getElementById('update-btn').addEventListener('click', async function() {
+                if (!isAuthenticated) {
+                    showStatus('Acesso não autorizado. Por favor, faça login como administrador.', 'error');
+                    return;
+                }
+                
+                const recordId = document.getElementById('record-id').value;
+                await updateRecord(recordId);
+            });
+            
+            // Botão para eliminar registo
+            document.getElementById('delete-btn').addEventListener('click', async function() {
+                if (!isAuthenticated) {
+                    showStatus('Acesso não autorizado. Por favor, faça login como administrador.', 'error');
+                    return;
+                }
+                
+                const recordId = document.getElementById('record-id').value;
+                if (confirm('Tem a certeza que deseja eliminar este registo?')) {
+                    await deleteRecord(recordId);
+                }
+            });
+            
+            // Botão para cancelar
+            document.getElementById('cancel-btn').addEventListener('click', function() {
+                resetForm();
+            });
+            
+            // Carregar registos ao iniciar
+            loadAllRecords();
+        });
+        
+        // Função para carregar todos os registos
+        async function loadAllRecords() {
+            const result = await callAPI('getAll');
+            if (result.status === 'success') {
+                displaySearchResults(result.data);
+            } else {
+                showStatus(result.message, 'error', 'search-status');
+                displaySearchResults([]);
+            }
+        }
+        
+        // Função para mostrar resultados da pesquisa
+        function displaySearchResults(resultados) {
+            const resultsBody = document.getElementById('search-results-body');
+            const resultsCount = document.getElementById('results-count');
+            
+            resultsCount.textContent = `${resultados.length} registo(s) encontrado(s)`;
+            
+            if (resultados.length === 0) {
+                resultsBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem;">Nenhum registo encontrado.</td></tr>';
+            } else {
+                let html = '';
+                resultados.forEach(registo => {
+                    // Processar gestão de toxicidade
+                    const gestaoToxicidade = registo.GestaoToxicidade ? registo.GestaoToxicidade.split(',') : [];
+                    const temOutraSituacao = gestaoToxicidade.includes('outra');
+                    const outraSituacaoTexto = registo.OutraSituacao || '';
+                    
+                    let gestaoToxicidadeHTML = '';
+                    
+                    if (temOutraSituacao && outraSituacaoTexto) {
+                        // Mostrar texto da "Outra Situação"
+                        gestaoToxicidadeHTML = `
+                            <div class="outra-situacao-text">
+                                <strong>Gestão Específica:</strong><br>
+                                ${outraSituacaoTexto}
+                            </div>
+                        `;
+                    } else {
+                        // Mostrar botões para tipos específicos
+                        gestaoToxicidadeHTML = '<div class="gestao-toxicidade-indicators">';
+                        
+                        gestaoToxicidade.forEach(tipo => {
+                            const tipoTrim = tipo.trim();
+                            if (tipoTrim && tipoTrim !== 'outra' && gestaoToxicidadeData[tipoTrim]) {
+                                gestaoToxicidadeHTML += `<span class="gestao-toxicidade-indicator indicator-${tipoTrim}" onclick="showGestaoToxicidadeModal('${tipoTrim}')" title="Clique para ver instruções">${getTipoAbreviacao(tipoTrim)}</span>`;
+                            }
+                        });
+                        
+                        gestaoToxicidadeHTML += '</div>';
+                    }
+                    
+                    html += `
+                        <tr>
+                            <td>${registo.ID || ''}</td>
+                            <td>${registo.NomeComercial || ''}</td>
+                            <td>${registo.Funcao || ''}</td>
+                            <td>${registo.SubstanciaToxica || ''}</td>
+                            <td>${registo.EfeitoToxico || 'Não aplicável'}</td>
+                            <td>${registo.MecanismoAcao || 'Não aplicável'}</td>
+                            <td>${gestaoToxicidadeHTML}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    ${isAuthenticated ? `
+                                        <button class="action-btn edit-btn" onclick="editRecord(${registo.ID})">Editar</button>
+                                        <button class="action-btn delete-btn" onclick="deleteRecordFromTable(${registo.ID})">Eliminar</button>
+                                    ` : `
+                                        <span style="color: #666; font-style: italic;">Acesso restrito</span>
+                                    `}
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+                resultsBody.innerHTML = html;
+            }
+        }
+
+        // Função auxiliar para obter abreviação do tipo
+        function getTipoAbreviacao(tipo) {
+            const abreviacoes = {
+                'ocular': 'OC',
+                'cutaneo': 'CT', 
+                'inhalacao': 'IN',
+                'ingestao': 'IG'
+            };
+            return abreviacoes[tipo] || tipo.charAt(0).toUpperCase();
+        }
+        
+        // Função para criar novo registo
+        async function createNewRecord() {
+            const recordId = document.getElementById('record-id').value;
+            
+            if (!recordId) {
+                showStatus('Por favor, insira um ID', 'error');
+                return;
+            }
+
+            // Obter gestão de toxicidade selecionada
+            const gestaoToxicidadeCheckboxes = document.querySelectorAll('input[name="gestao-toxicidade"]:checked');
+            const gestaoToxicidade = Array.from(gestaoToxicidadeCheckboxes).map(cb => cb.value).join(',');
+            const outraSituacaoTexto = document.getElementById('outra-situacao-texto').value;
+
+            // Validação para "Outra Situação"
+            if (gestaoToxicidade.includes('outra') && !outraSituacaoTexto) {
+                showStatus('Por favor, descreva a gestão de toxicidade para "Outra Situação"', 'error');
+                return;
+            }
+            
+            const result = await callAPI('create', {
+                ID: recordId,
+                NomeComercial: document.getElementById('nome-comercial').value,
+                Funcao: document.getElementById('funcao').value,
+                SubstanciaToxica: document.getElementById('substancia-toxica').value,
+                EfeitoToxico: document.getElementById('efeito-toxico').value || 'Não aplicável',
+                MecanismoAcao: document.getElementById('mecanismo-acao').value || 'Não aplicável',
+                GestaoToxicidade: gestaoToxicidade,
+                OutraSituacao: outraSituacaoTexto,
+                NotasAdicionais: document.getElementById('gestao-toxicidade').value || ''
+            });
+            
+            if (result.status === 'success') {
+                showStatus('Registo criado com sucesso!', 'success');
+                resetForm();
+                document.querySelector('[data-page="pesquisa"]').click();
+            } else {
+                showStatus(result.message, 'error');
+            }
+        }
+        
+        // Função para atualizar registo
+        async function updateRecord(id) {
+            // Obter gestão de toxicidade selecionada
+            const gestaoToxicidadeCheckboxes = document.querySelectorAll('input[name="gestao-toxicidade"]:checked');
+            const gestaoToxicidade = Array.from(gestaoToxicidadeCheckboxes).map(cb => cb.value).join(',');
+            const outraSituacaoTexto = document.getElementById('outra-situacao-texto').value;
+
+            // Validação para "Outra Situação"
+            if (gestaoToxicidade.includes('outra') && !outraSituacaoTexto) {
+                showStatus('Por favor, descreva a gestão de toxicidade para "Outra Situação"', 'error');
+                return;
+            }
+            
+            const result = await callAPI('update', {
+                ID: id,
+                NomeComercial: document.getElementById('nome-comercial').value,
+                Funcao: document.getElementById('funcao').value,
+                SubstanciaToxica: document.getElementById('substancia-toxica').value,
+                EfeitoToxico: document.getElementById('efeito-toxico').value || 'Não aplicável',
+                MecanismoAcao: document.getElementById('mecanismo-acao').value || 'Não aplicável',
+                GestaoToxicidade: gestaoToxicidade,
+                OutraSituacao: outraSituacaoTexto,
+                NotasAdicionais: document.getElementById('gestao-toxicidade').value || ''
+            });
+            
+            if (result.status === 'success') {
+                showStatus('Registo atualizado com sucesso!', 'success');
+                resetForm();
+                document.querySelector('[data-page="pesquisa"]').click();
+            } else {
+                showStatus(result.message, 'error');
+            }
+        }
+        
+        // Função para eliminar registo
+        async function deleteRecord(id) {
+            const result = await callAPI('delete', { ID: id });
+            
+            if (result.status === 'success') {
+                showStatus('Registo eliminado com sucesso!', 'success');
+                resetForm();
+                document.querySelector('[data-page="pesquisa"]').click();
+            } else {
+                showStatus(result.message, 'error');
+            }
+        }
+        
+        // Função para eliminar registo da tabela
+        async function deleteRecordFromTable(id) {
+            if (confirm('Tem a certeza que deseja eliminar este registo?')) {
+                await deleteRecord(id);
+            }
+        }
+        
+        // Função para editar registo da tabela
+        async function editRecord(id) {
+            const result = await callAPI('getAll');
+            if (result.status === 'success') {
+                const registo = result.data.find(r => r.ID == id);
+                if (registo) {
+                    document.querySelector('[data-page="gestao"]').click();
+                    loadRecordForEditing(registo);
+                }
+            }
+        }
+        
+        // Função para carregar registo para edição
+        function loadRecordForEditing(registo) {
+            document.getElementById('record-id').value = registo.ID || '';
+            document.getElementById('nome-comercial').value = registo.NomeComercial || '';
+            document.getElementById('funcao').value = registo.Funcao || '';
+            document.getElementById('substancia-toxica').value = registo.SubstanciaToxica || '';
+            document.getElementById('efeito-toxico').value = registo.EfeitoToxico !== 'Não aplicável' ? registo.EfeitoToxico : '';
+            document.getElementById('mecanismo-acao').value = registo.MecanismoAcao !== 'Não aplicável' ? registo.MecanismoAcao : '';
+            document.getElementById('gestao-toxicidade').value = registo.NotasAdicionais || '';
+            
+            // Carregar gestão de toxicidade
+            const gestaoToxicidade = registo.GestaoToxicidade ? registo.GestaoToxicidade.split(',') : [];
+            document.querySelectorAll('input[name="gestao-toxicidade"]').forEach(checkbox => {
+                checkbox.checked = gestaoToxicidade.includes(checkbox.value);
+            });
+
+            // Carregar "Outra Situação" se aplicável
+            if (gestaoToxicidade.includes('outra')) {
+                document.getElementById('outra-situacao-group').style.display = 'block';
+                document.getElementById('outra-situacao-texto').value = registo.OutraSituacao || '';
+            }
+            
+            document.getElementById('save-btn').style.display = 'none';
+            document.getElementById('update-btn').style.display = 'inline-block';
+            document.getElementById('delete-btn').style.display = 'inline-block';
+        }
+        
+        // Função para limpar o formulário
+        function resetForm() {
+            document.getElementById('manage-record-form').reset();
+            document.getElementById('find-id').value = '';
+            
+            document.getElementById('save-btn').style.display = 'inline-block';
+            document.getElementById('update-btn').style.display = 'none';
+            document.getElementById('delete-btn').style.display = 'none';
+            
+            // Limpar campos
+            document.getElementById('efeito-toxico').value = '';
+            document.getElementById('mecanismo-acao').value = '';
+            document.getElementById('gestao-toxicidade').value = '';
+            document.getElementById('outra-situacao-texto').value = '';
+            document.getElementById('outra-situacao-group').style.display = 'none';
+            
+            // Desmarcar todas as checkboxes
+            document.querySelectorAll('input[name="gestao-toxicidade"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+        }
+    </script>
+</body>
+</html>
